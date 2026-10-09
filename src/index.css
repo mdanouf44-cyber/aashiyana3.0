@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Global Reset & Base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: auto; /* Lenis handles smooth scroll */ }
+
+body {
+  font-family: 'Jost', 'DM Sans', sans-serif;
+  background: #2a0a3d;
+  color: #fdf6ec;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Film Grain Overlay ──────────────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
+/* ── Text selection ──────────────────────────────────────────────────────── */
+::selection { background: #ffd700; color: #2a0a3d; }
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+.font-display { font-family: 'Playfair Display', Georgia, serif; }
+.font-body { font-family: 'Jost', 'DM Sans', sans-serif; }
+
+.gold-rule {
+  display: block;
+  height: 1px;
+  background: #b8962e;
+  transform-origin: left;
+}
+
+.label-tag {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #ffd700;
+  font-weight: 500;
+}
+.label-tag.text-plum,
+.label-tag.bg-gold {
+  color: #1c0630 !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1c0630; }
+::-webkit-scrollbar-thumb { background: #b8962e; border-radius: 3px; }
+
+/* ── Input underline style ───────────────────────────────────────────────── */
+.field-underline {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(253,246,236,0.3);
+  border-radius: 0;
+  color: #fdf6ec;
+  width: 100%;
+  padding: 0.6rem 0;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 200ms;
+}
+.field-underline:focus { border-bottom-color: #ffd700; }
+.field-underline::placeholder { color: rgba(253,246,236,0.35); }
+.field-underline option { background: #2a0a3d; color: #fdf6ec; }
+
+/* ── Clip mask for hero title animation ─────────────────────────────────── */
+.clip-reveal { overflow: hidden; }
+
+/* ── Marquee ─────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-inner { animation: marquee 24s linear infinite; white-space: nowrap; }
