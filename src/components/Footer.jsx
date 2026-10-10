@@ -66,7 +66,7 @@ export default function Footer() {
 
         {/* Bottom line */}
         <p className="font-body text-center" style={{ color: "rgba(253,246,236,0.35)", fontSize: "0.78rem", letterSpacing: "0.05em" }}>
-          © 2026 {event.name}{event.version ? ` ${event.version}` : ""} · {event.institution} · Organised by {event.committee}
+          © 2026 {event.name}{event.version ? ` ${event.version}` : ""}{event.institution ? ` · ${event.institution}` : ""} · Organised by {event.committee}
         </p>
       </div>
     </footer>

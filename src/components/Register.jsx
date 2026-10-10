@@ -19,10 +19,10 @@ function isPastDeadline() {
 function Field({ label, error, children }) {
   return (
     <div className="relative pb-1">
-      <label className="label-tag block mb-1">{label}</label>
+      <label className="label-tag block mb-1.5" style={{ color: "#ffd700", fontWeight: 600 }}>{label}</label>
       {children}
       {error && (
-        <p className="text-xs mt-1.5 font-body" style={{ color: "#ff6b8a" }} role="alert" aria-live="polite">
+        <p className="text-xs mt-1.5 font-body font-medium" style={{ color: "#ff6b8a" }} role="alert" aria-live="polite">
           {error}
         </p>
       )}
@@ -231,7 +231,7 @@ export default function Register() {
   const memberInputsRef = useRef(null);
 
   const blank = {
-    fullName: "", year: "", usn: "", institution: event.institution,
+    fullName: "", year: "", usn: "", institution: "",
     participation: [], teamName: "", numberOfMembers: 2, teamMembers: [],
     phone: "",
   };
@@ -297,18 +297,11 @@ export default function Register() {
     const el = teamContainerRef.current;
     if (!el) return;
     if (needsTeam) {
-      gsap.fromTo(el, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.45, ease: "power2.out" });
+      gsap.fromTo(el, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.45, ease: "power2.out", clearProps: "height,opacity" });
     } else {
       gsap.to(el, { height: 0, opacity: 0, duration: 0.3, ease: "power2.in" });
     }
   }, [needsTeam]);
-
-  // ── Member inputs animate when count changes ─────────────────────────────
-  useEffect(() => {
-    if (!memberInputsRef.current) return;
-    const items = memberInputsRef.current.querySelectorAll(".member-field");
-    gsap.from(items, { opacity: 0, y: 10, duration: 0.3, stagger: 0.04, ease: "power2.out" });
-  }, [form.teamMembers.length]);
 
   const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -509,39 +502,71 @@ export default function Register() {
 
                 {/* ── Team fields (conditional) ────────────────────────── */}
                 <div ref={teamContainerRef} style={{ overflow: "hidden", height: 0, opacity: 0 }}>
-                  <div className="flex flex-col gap-6 pb-2 pt-1">
+                  <div
+                    className="flex flex-col gap-6 p-6 sm:p-7 rounded-2xl my-3"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.06)",
+                      border: "1.5px solid rgba(255, 215, 0, 0.4)",
+                      boxShadow: "0 10px 30px rgba(0, 0, 0, 0.35)",
+                    }}
+                  >
                     {/* Team info header */}
-                    <div className="rounded-lg px-4 py-3 flex items-center gap-3"
-                      style={{ background: "rgba(255,215,0,0.07)", border: "1px solid rgba(184,150,46,0.35)" }}>
-                      <span style={{ fontSize: "0.7rem", color: "#ffd700", textTransform: "uppercase", letterSpacing: "0.2em", fontFamily: "'Jost', sans-serif" }}>
-                        Team event selected
+                    <div className="flex items-center justify-between pb-3 border-b border-gold/25">
+                      <div>
+                        <span className="font-display font-bold text-gold text-base tracking-wide block">
+                          👥 TEAM / GROUP DETAILS
+                        </span>
+                        <p className="font-body text-cream/70 text-xs mt-0.5">
+                          Only Team Name, count, and member names are required for your group.
+                        </p>
+                      </div>
+                      <span className="label-tag bg-gold text-plum px-3 py-1 rounded-full text-[10px] font-bold">
+                        Group Mode
                       </span>
                     </div>
 
                     {/* Team Name */}
                     <Field label="Team Name *" error={errors.teamName}>
-                      <input id="teamName" type="text" className="field-underline"
-                        placeholder="Your team's name" value={form.teamName} onChange={set("teamName")} />
+                      <input
+                        id="teamName"
+                        type="text"
+                        className="field-underline"
+                        placeholder="Your team's name"
+                        value={form.teamName}
+                        onChange={set("teamName")}
+                      />
                     </Field>
 
                     {/* Number of members */}
                     <Field label="Number of Members *" error={errors.numberOfMembers}>
-                      <input id="numberOfMembers" type="number" min="2" max="20"
-                        className="field-underline" placeholder="e.g. 4"
-                        value={form.numberOfMembers} onChange={set("numberOfMembers")} />
+                      <input
+                        id="numberOfMembers"
+                        type="number"
+                        min="2"
+                        max="20"
+                        className="field-underline"
+                        placeholder="e.g. 4"
+                        value={form.numberOfMembers}
+                        onChange={set("numberOfMembers")}
+                      />
                     </Field>
 
                     {/* Dynamic member name inputs */}
                     {n >= 2 && (
-                      <div ref={memberInputsRef} className="flex flex-col gap-4">
-                        <p className="label-tag">Member Names *</p>
+                      <div className="flex flex-col gap-5 pt-1">
+                        <div className="flex items-center justify-between">
+                          <p className="label-tag" style={{ color: "#ffd700", fontSize: "0.72rem", letterSpacing: "0.2em", fontWeight: 700 }}>
+                            MEMBER NAMES *
+                          </p>
+                          <span className="text-cream/60 text-xs font-body font-medium">Full names of group participants</span>
+                        </div>
                         {Array.from({ length: n }).map((_, i) => (
-                          <div key={i} className="member-field">
-                            <Field label={`Member ${i + 1}`} error={errors[`member_${i}`]}>
+                          <div key={i} className="w-full">
+                            <Field label={`Member ${i + 1} Name *`} error={errors[`member_${i}`]}>
                               <input
                                 type="text"
                                 id={`member-${i}`}
-                                className="field-underline"
+                                className="field-underline text-cream"
                                 placeholder={`Member ${i + 1} full name`}
                                 value={form.teamMembers[i] ?? ""}
                                 onChange={(e) => setMember(i, e.target.value)}

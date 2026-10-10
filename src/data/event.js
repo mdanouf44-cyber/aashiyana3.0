@@ -24,7 +24,7 @@ export const event = {
   isoDate: "2026-10-17T18:00:00+05:30",
   timing: "6:00 PM onwards",
   venue: "College Auditorium",
-  institution: "Your College Name",
+  institution: "",
   committee: "Cultural Committee",
   registrationDeadline: "2026-10-14", // YYYY-MM-DD
   tagline: "Join us for an unforgettable evening!",

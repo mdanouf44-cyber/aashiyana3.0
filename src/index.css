@@ -65,19 +65,27 @@ body::after {
 .field-underline {
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(253,246,236,0.3);
+  border-bottom: 1.5px solid rgba(253,246,236,0.4);
   border-radius: 0;
-  color: #fdf6ec;
+  color: #ffffff;
   width: 100%;
-  padding: 0.6rem 0;
+  padding: 0.65rem 0;
   font-family: 'Jost', sans-serif;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 200ms;
+  transition: border-color 200ms, border-bottom 200ms;
 }
-.field-underline:focus { border-bottom-color: #ffd700; }
-.field-underline::placeholder { color: rgba(253,246,236,0.35); }
-.field-underline option { background: #2a0a3d; color: #fdf6ec; }
+.field-underline:focus {
+  border-bottom-color: #ffd700;
+  border-bottom-width: 2px;
+}
+.field-underline::placeholder {
+  color: rgba(253,246,236,0.6);
+}
+.field-underline option {
+  background: #2a0a3d;
+  color: #ffffff;
+}
 
 /* ── Clip mask for hero title animation ─────────────────────────────────── */
 .clip-reveal { overflow: hidden; }
