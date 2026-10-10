@@ -55,20 +55,20 @@ export const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Other"];
 
 export const contacts = [
   {
-    name: "Coordinator Name 1",
+    name: "Mohammad Anouf",
     role: "Student Coordinator",
-    phone: "+91 00000 00000",
-    whatsapp: "910000000000",
+    phone: "+91 91132 38275",
+    whatsapp: "9113238275",
   },
   {
-    name: "Coordinator Name 2",
+    name: "Nikhith",
     role: "Cultural Committee",
-    phone: "+91 00000 00001",
-    whatsapp: "910000000001",
+    phone: "+91 80736 97845",
+    whatsapp: "8073697845",
   },
 ];
 
 export const social = {
   instagram: "https://instagram.com/yourhandle",
-  whatsapp: "https://wa.me/910000000000",
+  whatsapp: "https://wa.me/919113238275",
 };
