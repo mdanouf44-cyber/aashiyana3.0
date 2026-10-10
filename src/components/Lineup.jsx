@@ -41,7 +41,7 @@ export default function Lineup({ onSelectEvent }) {
   const handleRowClick = (ev) => {
     // Pre-select event in register form via custom event, then scroll
     window.dispatchEvent(
-      new CustomEvent("aashiyana:selectEvent", { detail: { name: ev.name } })
+      new CustomEvent("aashiyana:selectEvent", { detail: { name: ev.name, team: ev.team } })
     );
     scrollTo("register");
   };

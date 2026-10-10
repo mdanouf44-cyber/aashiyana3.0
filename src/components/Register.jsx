@@ -260,12 +260,22 @@ export default function Register() {
     const handler = (e) => {
       const name = e.detail?.name;
       if (!name) return;
-      setForm((prev) => ({
-        ...prev,
-        participation: prev.participation.includes(name)
-          ? prev.participation
-          : [...prev.participation, name],
-      }));
+      const isTeam = teamEvents.includes(name);
+
+      setForm((prev) => {
+        const prevHasTeam = prev.participation.some((ev) => teamEvents.includes(ev));
+        // If switching between team and solo modes, select this event exclusively
+        if (prev.participation.length > 0 && isTeam !== prevHasTeam) {
+          return { ...prev, participation: [name] };
+        }
+        return {
+          ...prev,
+          participation: prev.participation.includes(name)
+            ? prev.participation
+            : [...prev.participation, name],
+        };
+      });
+      setErrors((prev) => ({ ...prev, participation: null }));
     };
     window.addEventListener("aashiyana:selectEvent", handler);
     return () => window.removeEventListener("aashiyana:selectEvent", handler);
@@ -311,12 +321,22 @@ export default function Register() {
   };
 
   const toggleChip = (name) => {
-    setForm((prev) => ({
-      ...prev,
-      participation: prev.participation.includes(name)
-        ? prev.participation.filter((x) => x !== name)
-        : [...prev.participation, name],
-    }));
+    const isTeam = teamEvents.includes(name);
+
+    setForm((prev) => {
+      const prevHasTeam = prev.participation.some((ev) => teamEvents.includes(ev));
+      // Exclusivity: selecting group event allows only group events; selecting solo allows only solo
+      if (prev.participation.length > 0 && isTeam !== prevHasTeam) {
+        return { ...prev, participation: [name] };
+      }
+      return {
+        ...prev,
+        participation: prev.participation.includes(name)
+          ? prev.participation.filter((x) => x !== name)
+          : [...prev.participation, name],
+      };
+    });
+    setErrors((prev) => ({ ...prev, participation: null }));
   };
 
   const validate = useCallback(() => {
@@ -441,7 +461,27 @@ export default function Register() {
                 {/* Event chips */}
                 <div ref={(el) => (fieldsRef.current[5] = el)}>
                   <Field label="Events — select at least one *" error={errors.participation}>
-                    <div className="flex flex-wrap gap-2 mt-3" role="group" aria-label="Event selection">
+                    {needsTeam ? (
+                      <div className="flex items-center justify-between text-xs mt-2 mb-1 px-1">
+                        <span className="text-gold font-body font-semibold">
+                          👥 Group Registration — Team events only
+                        </span>
+                        <span className="text-cream opacity-50 text-[11px]">
+                          (Click a solo event to switch to solo)
+                        </span>
+                      </div>
+                    ) : form.participation.length > 0 ? (
+                      <div className="flex items-center justify-between text-xs mt-2 mb-1 px-1">
+                        <span className="text-cream opacity-80 font-body">
+                          👤 Solo Registration
+                        </span>
+                        <span className="text-cream opacity-50 text-[11px]">
+                          (Click a team event to switch to group)
+                        </span>
+                      </div>
+                    ) : null}
+
+                    <div className="flex flex-wrap gap-2 mt-2" role="group" aria-label="Event selection">
                       {lineup.map((ev) => {
                         const selected = form.participation.includes(ev.name);
                         return (

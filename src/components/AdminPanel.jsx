@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { admin, event, lineup } from "../data/event";
+import { event, lineup } from "../data/event";
 import { fetchRegistrations, toggleCheckIn, deleteRegistration } from "../lib/submit";
 import QRScannerModal from "./QRScannerModal";
 
@@ -20,51 +20,6 @@ function Badge({ checked }) {
     >
       {checked ? "✓ Checked In" : "Pending"}
     </span>
-  );
-}
-
-// ── Login form ────────────────────────────────────────────────────────────────
-function LoginForm({ onLogin }) {
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
-  const [err, setErr] = useState("");
-
-  const submit = (e) => {
-    e.preventDefault();
-    if (user === admin.username && pass === admin.password) {
-      onLogin();
-    } else {
-      setErr("Incorrect credentials.");
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "linear-gradient(135deg,#2a0a3d,#4b1257,#b02a5b)" }}>
-      <div className="w-full max-w-sm">
-        <p className="label-tag mb-3">Admin Access</p>
-        <h1 className="font-display font-black text-cream text-3xl mb-8">
-          {event.name}{event.version ? <> <span className="text-gold">{event.version}</span></> : ""}
-        </h1>
-        <form onSubmit={submit} className="flex flex-col gap-6">
-          <div>
-            <label className="label-tag block mb-1">Username</label>
-            <input className="field-underline" type="text" placeholder="admin" value={user}
-              onChange={(e) => setUser(e.target.value)} autoComplete="username" />
-          </div>
-          <div>
-            <label className="label-tag block mb-1">Password</label>
-            <input className="field-underline" type="password" placeholder="••••••••" value={pass}
-              onChange={(e) => setPass(e.target.value)} autoComplete="current-password" />
-          </div>
-          {err && <p className="text-xs font-body" style={{ color: "#ff6b8a" }}>{err}</p>}
-          <button type="submit"
-            className="w-full bg-gold text-plum font-body font-semibold uppercase tracking-widest text-sm
-                       py-3.5 rounded-full hover:brightness-105 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cream">
-            Enter
-          </button>
-        </form>
-      </div>
-    </div>
   );
 }
 
@@ -97,9 +52,8 @@ function QRModal({ reg, onClose }) {
   );
 }
 
-// ── Main Admin Panel ──────────────────────────────────────────────────────────
+// ── Main Owner Panel ──────────────────────────────────────────────────────────
 export default function AdminPanel() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -126,8 +80,8 @@ export default function AdminPanel() {
   };
 
   useEffect(() => {
-    if (loggedIn) load();
-  }, [loggedIn]);
+    load();
+  }, []);
 
   // ── Derived stats ──────────────────────────────────────────────────────────
   const totalByEvent = allEventNames.reduce((acc, name) => {
@@ -193,7 +147,7 @@ export default function AdminPanel() {
     const rows = [cols.join(","), ...records.map((r) => cols.map((c) => `"${(r[c] ?? "").toString().replace(/"/g, '""')}"`).join(","))];
     const blob = new Blob([rows.join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "aashiyana3_registrations.csv"; a.click();
+    const a = document.createElement("a"); a.href = url; a.download = "aashiyana_registrations.csv"; a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -202,8 +156,6 @@ export default function AdminPanel() {
       {sortKey === col ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
     </span>
   );
-
-  if (!loggedIn) return <LoginForm onLogin={() => setLoggedIn(true)} />;
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(135deg,#1c0630 0%,#2a0a3d 60%,#3d1254 100%)" }}>
@@ -262,7 +214,7 @@ export default function AdminPanel() {
           <span className="opacity-30 text-cream">|</span>
           <p className="font-display font-bold text-cream text-lg">
             {event.name}{event.version ? <> <span className="text-gold">{event.version}</span></> : ""}
-            <span className="label-tag ml-2 text-gold-muted font-body font-normal">Admin</span>
+            <span className="label-tag ml-2 text-gold-muted font-body font-normal">Owner</span>
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -480,7 +432,7 @@ export default function AdminPanel() {
         </div>
 
         <p className="mt-4 font-body text-cream opacity-25 text-xs text-right">
-          {event.name}{event.version ? ` ${event.version}` : ""} Admin · {event.date}
+          {event.name}{event.version ? ` ${event.version}` : ""} Owner · {event.date}
         </p>
       </div>
     </div>

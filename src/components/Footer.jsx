@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { event } from "../data/event";
 
 const links = ["Home", "About", "Lineup", "Register", "Contact"];
@@ -59,13 +58,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <Link
-              to="/admin"
-              className="label-tag text-gold opacity-40 hover:opacity-100 hover:text-gold transition-all duration-200 text-xs ml-auto md:ml-0"
-              title="Organizer / Admin Portal"
-            >
-              🔒 Admin
-            </Link>
           </nav>
         </div>
 

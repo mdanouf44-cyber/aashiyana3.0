@@ -86,7 +86,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainSite />} />
         <Route
-          path="/admin"
+          path="/owner"
           element={
             <Suspense
               fallback={
@@ -94,7 +94,7 @@ export default function App() {
                   className="min-h-screen flex items-center justify-center font-display text-gold tracking-widest text-sm"
                   style={{ background: "#1c0630" }}
                 >
-                  LOADING ADMIN PORTAL…
+                  LOADING OWNER PORTAL…
                 </div>
               }
             >
@@ -102,6 +102,7 @@ export default function App() {
             </Suspense>
           }
         />
+        <Route path="/admin" element={<Navigate to="/owner" replace />} />
         {/* Catch-all: redirect unknown paths to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
