@@ -25,7 +25,10 @@ function MainSite() {
     const lenis = new Lenis({ duration: 1.2, smoothWheel: true, touchMultiplier: 1.5 });
     lenisRef.current = lenis;
 
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    // BUG FIX: store ticker fn in a variable so the SAME reference is removed on cleanup.
+    // Previously a new arrow function was passed to remove(), which never matched.
+    const tickerFn = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerFn);
     gsap.ticker.lagSmoothing(0);
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -43,7 +46,7 @@ function MainSite() {
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      gsap.ticker.remove(tickerFn);
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);

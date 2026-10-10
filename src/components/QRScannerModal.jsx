@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 
-
-
 export default function QRScannerModal({ records, onCheckIn, onClose }) {
   const [activeTab, setActiveTab] = useState("camera"); // "camera" | "file" | "manual"
   const [cameras, setCameras] = useState([]);
   const [selectedCamera, setSelectedCamera] = useState("");
   const [cameraError, setCameraError] = useState("");
-  const [isScanning, setIsScanning] = useState(false);
   const [autoCheckIn, setAutoCheckIn] = useState(true);
 
   // Scanned state
@@ -17,6 +14,12 @@ export default function QRScannerModal({ records, onCheckIn, onClose }) {
 
   const scannerRef = useRef(null);
   const isStoppingRef = useRef(false);
+  // BUG FIX: use a ref to mirror scanResult so the html5-qrcode callback
+  // always reads the latest value and never has a stale closure.
+  const scanResultRef = useRef(null);
+  // BUG FIX: track scanning status in a ref so stopCamera() is never fooled
+  // by stale state (React state updates are async, refs are synchronous).
+  const isScanningRef = useRef(false);
 
   // ── Helper to find registration from decoded text ─────────────────────────
   const resolveRecord = (decodedText) => {
@@ -49,49 +52,52 @@ export default function QRScannerModal({ records, onCheckIn, onClose }) {
   };
 
   const handleDecoded = (decodedText) => {
-    if (scanResult) return; // already showing a result
+    // BUG FIX: read from ref (not state) to avoid stale closure inside scanner callback
+    if (scanResultRef.current) return; // already showing a result
 
     const { found } = resolveRecord(decodedText);
 
     if (!found) {
-      setScanResult({
-        status: "notfound",
-        record: null,
-        raw: decodedText,
-      });
+      const result = { status: "notfound", record: null, raw: decodedText };
+      scanResultRef.current = result;
+      setScanResult(result);
       return;
     }
 
     if (found.checkedIn) {
-      setScanResult({
-        status: "already",
-        record: found,
-        raw: decodedText,
-      });
+      const result = { status: "already", record: found, raw: decodedText };
+      scanResultRef.current = result;
+      setScanResult(result);
       return;
     }
 
     // Found and pending
     if (autoCheckIn) {
       onCheckIn(found, true);
-      setScanResult({
+      const result = {
         status: "success",
         record: { ...found, checkedIn: true },
         raw: decodedText,
         autoDone: true,
-      });
+      };
+      scanResultRef.current = result;
+      setScanResult(result);
     } else {
-      setScanResult({
+      const result = {
         status: "pending_confirm",
         record: found,
         raw: decodedText,
-      });
+      };
+      scanResultRef.current = result;
+      setScanResult(result);
     }
   };
 
   // ── Camera Initialization & Lifecycle ─────────────────────────────────────
   const stopCamera = async () => {
-    if (scannerRef.current && isScanning && !isStoppingRef.current) {
+    // BUG FIX: use isScanningRef (not state) — state may be stale when called
+    // from a cleanup/unmount context, causing the stream to never be released.
+    if (scannerRef.current && isScanningRef.current && !isStoppingRef.current) {
       isStoppingRef.current = true;
       try {
         await scannerRef.current.stop();
@@ -101,7 +107,7 @@ export default function QRScannerModal({ records, onCheckIn, onClose }) {
       } finally {
         scannerRef.current = null;
         isStoppingRef.current = false;
-        setIsScanning(false);
+        isScanningRef.current = false;
       }
     }
   };
@@ -138,13 +144,13 @@ export default function QRScannerModal({ records, onCheckIn, onClose }) {
           // Frame scan frame attempt
         }
       );
-      setIsScanning(true);
+      isScanningRef.current = true;
     } catch (err) {
       console.error("Camera start failed:", err);
       setCameraError(
         err?.message || "Could not access camera. Please check browser permissions."
       );
-      setIsScanning(false);
+      isScanningRef.current = false;
     }
   };
 
@@ -211,21 +217,24 @@ export default function QRScannerModal({ records, onCheckIn, onClose }) {
   };
 
   const handleResetForNext = () => {
+    scanResultRef.current = null;
     setScanResult(null);
     setManualQuery("");
-    if (activeTab === "camera" && !isScanning) {
+    if (activeTab === "camera" && !isScanningRef.current) {
       startCamera(selectedCamera || null);
     }
   };
 
   const handleConfirmManualCheckIn = () => {
-    if (scanResult?.record) {
-      onCheckIn(scanResult.record, true);
-      setScanResult((prev) => ({
-        ...prev,
+    if (scanResultRef.current?.record) {
+      onCheckIn(scanResultRef.current.record, true);
+      const updated = {
+        ...scanResultRef.current,
         status: "success",
-        record: { ...prev.record, checkedIn: true },
-      }));
+        record: { ...scanResultRef.current.record, checkedIn: true },
+      };
+      scanResultRef.current = updated;
+      setScanResult(updated);
     }
   };
 

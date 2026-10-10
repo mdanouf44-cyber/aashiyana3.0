@@ -32,6 +32,7 @@ function Field({ label, error, children }) {
 
 // ── QR Ticket ─────────────────────────────────────────────────────────────────
 function QRTicket({ data, regId, onReset, ticketRef }) {
+  // Full JSON payload: scanner can resolve by id OR usn from a single QR scan.
   const qrValue = JSON.stringify({ id: regId, usn: data.usn, name: data.fullName, events: data.participation });
   const waText = `I just registered for Aashiyana 3.0! 🎭\nName: ${data.fullName}\nUSN: ${data.usn}\nEvents: ${data.participation.join(", ")}\n\nJoin us on ${event.date} at ${event.venue}.\nRegister: ${window.location.href}`;
   const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
@@ -113,7 +114,7 @@ function QRTicket({ data, regId, onReset, ticketRef }) {
             title={`Scan QR Gate Pass for ${data.usn}`}
           >
             <QRCodeSVG
-              value={regId}
+              value={qrValue}
               size={150}
               fgColor="#1c0630"
               bgColor="#ffffff"
