@@ -260,7 +260,7 @@ export default function Register() {
     const handler = (e) => {
       const name = e.detail?.name;
       if (!name) return;
-      const isTeam = teamEvents.includes(name);
+      const isTeam = e.detail?.team ?? teamEvents.includes(name);
 
       setForm((prev) => {
         const prevHasTeam = prev.participation.some((ev) => teamEvents.includes(ev));
@@ -276,6 +276,19 @@ export default function Register() {
         };
       });
       setErrors((prev) => ({ ...prev, participation: null }));
+
+      if (isTeam) {
+        setTimeout(() => {
+          const el = document.getElementById("team-details-section");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            el.classList.add("ring-2", "ring-gold", "ring-offset-2", "ring-offset-plum");
+            setTimeout(() => {
+              el.classList.remove("ring-2", "ring-gold", "ring-offset-2", "ring-offset-plum");
+            }, 1800);
+          }
+        }, 350);
+      }
     };
     window.addEventListener("aashiyana:selectEvent", handler);
     return () => window.removeEventListener("aashiyana:selectEvent", handler);
@@ -330,6 +343,15 @@ export default function Register() {
       };
     });
     setErrors((prev) => ({ ...prev, participation: null }));
+
+    if (isTeam) {
+      setTimeout(() => {
+        const el = document.getElementById("team-details-section");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+    }
   };
 
   const validate = useCallback(() => {
@@ -503,7 +525,8 @@ export default function Register() {
                 {/* ── Team fields (conditional) ────────────────────────── */}
                 <div ref={teamContainerRef} style={{ overflow: "hidden", height: 0, opacity: 0 }}>
                   <div
-                    className="flex flex-col gap-6 p-6 sm:p-7 rounded-2xl my-3"
+                    id="team-details-section"
+                    className="flex flex-col gap-6 p-6 sm:p-7 rounded-2xl my-3 transition-all duration-300"
                     style={{
                       background: "rgba(255, 255, 255, 0.06)",
                       border: "1.5px solid rgba(255, 215, 0, 0.4)",

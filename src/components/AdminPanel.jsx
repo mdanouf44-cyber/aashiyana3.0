@@ -65,6 +65,7 @@ export default function AdminPanel() {
   const [qrReg, setQrReg] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -160,6 +161,133 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(135deg,#1c0630 0%,#2a0a3d 60%,#3d1254 100%)" }}>
       {qrReg && <QRModal reg={qrReg} onClose={() => setQrReg(null)} />}
+      {selectedTeam && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(18, 3, 32, 0.92)", backdropFilter: "blur(10px)" }}
+          onClick={() => setSelectedTeam(null)}
+        >
+          <div
+            className="rounded-2xl p-6 sm:p-8 max-w-lg w-full border shadow-2xl relative"
+            style={{
+              background: "linear-gradient(135deg, #250937 0%, #340c4a 100%)",
+              borderColor: "rgba(255, 215, 0, 0.4)",
+              boxShadow: "0 25px 60px rgba(0,0,0,0.8)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-gold/20 mb-5">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-full bg-gold/15 text-gold border border-gold/30 flex items-center justify-center text-xl">
+                  👥
+                </span>
+                <div>
+                  <p className="label-tag text-gold">Full Team Details</p>
+                  <h3 className="font-display font-black text-cream text-2xl">
+                    {selectedTeam.teamName}
+                  </h3>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedTeam(null)}
+                className="text-cream/50 hover:text-cream text-xl p-2 rounded-lg hover:bg-white/5 transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs font-body">
+              {/* Event */}
+              <div className="bg-black/25 rounded-xl p-3.5 border border-white/5 flex justify-between items-center">
+                <span className="text-cream/60 font-medium">Registered Event:</span>
+                <span className="text-gold font-bold text-sm">{selectedTeam.events}</span>
+              </div>
+
+              {/* Team Leader */}
+              <div className="bg-black/25 rounded-xl p-4 border border-white/5 space-y-2">
+                <p className="label-tag text-gold/80 mb-2">Team Leader (Registrant)</p>
+                <div className="grid grid-cols-2 gap-2.5 text-xs">
+                  <div>
+                    <span className="text-cream/50 block">Full Name:</span>
+                    <span className="text-cream font-semibold text-sm">{selectedTeam.name}</span>
+                  </div>
+                  <div>
+                    <span className="text-cream/50 block">USN:</span>
+                    <span className="font-mono text-gold font-semibold">{selectedTeam.usn}</span>
+                  </div>
+                  <div>
+                    <span className="text-cream/50 block">Year:</span>
+                    <span className="text-cream">{selectedTeam.year || "—"}</span>
+                  </div>
+                  <div>
+                    <span className="text-cream/50 block">Institution / College:</span>
+                    <span className="text-cream truncate block">{selectedTeam.institution || "—"}</span>
+                  </div>
+                  {selectedTeam.phone && (
+                    <div className="col-span-2">
+                      <span className="text-cream/50 block">Contact Phone:</span>
+                      <span className="text-cream font-mono">{selectedTeam.phone}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* All Team Members */}
+              <div className="bg-black/25 rounded-xl p-4 border border-white/5">
+                <div className="flex justify-between items-center mb-2.5">
+                  <p className="label-tag text-gold/80">Group Participants</p>
+                  <span className="text-cream/50 text-[11px]">
+                    {selectedTeam.members ? selectedTeam.members.split(",").length : 0} members listed
+                  </span>
+                </div>
+                {selectedTeam.members ? (
+                  <ul className="space-y-2 divide-y divide-white/5 max-h-48 overflow-y-auto pr-1">
+                    {selectedTeam.members.split(",").map((member, idx) => (
+                      <li key={idx} className="pt-2 flex items-center gap-2.5 text-cream text-xs">
+                        <span className="w-5 h-5 rounded-full bg-gold/15 text-gold text-[10px] font-bold flex items-center justify-center shrink-0">
+                          {idx + 1}
+                        </span>
+                        <span className="font-medium text-cream">{member.trim()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-cream/40 italic">No member list recorded.</p>
+                )}
+              </div>
+
+              {/* Status & ID */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="font-mono text-cream/40 text-[11px]">Registration ID: {selectedTeam.id}</span>
+                <Badge checked={selectedTeam.checkedIn} />
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => {
+                  handleCheckIn(selectedTeam);
+                  setSelectedTeam((prev) => ({ ...prev, checkedIn: !prev.checkedIn }));
+                }}
+                className="flex-1 py-2.5 rounded-full font-body text-xs font-bold uppercase tracking-wider transition cursor-pointer"
+                style={{
+                  background: selectedTeam.checkedIn ? "rgba(76,222,155,0.2)" : "#ffd700",
+                  color: selectedTeam.checkedIn ? "#4cde9b" : "#1c0630",
+                  border: selectedTeam.checkedIn ? "1px solid rgba(76,222,155,0.4)" : "none",
+                }}
+              >
+                {selectedTeam.checkedIn ? "Mark as Pending" : "Check In Team ✓"}
+              </button>
+              <button
+                onClick={() => setSelectedTeam(null)}
+                className="px-5 py-2.5 rounded-full font-body text-xs uppercase tracking-wider text-cream/70 hover:text-cream transition border border-white/20 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showScanner && (
         <QRScannerModal
           records={records}
@@ -380,9 +508,25 @@ export default function AdminPanel() {
                         ))}
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-body text-cream opacity-70 text-xs whitespace-nowrap">
-                      {r.teamName || "—"}
-                      {r.members && <span className="block opacity-50 text-xs">{r.members}</span>}
+                    <td className="px-4 py-3 font-body text-xs whitespace-nowrap">
+                      {r.teamName ? (
+                        <button
+                          onClick={() => setSelectedTeam(r)}
+                          className="group text-left cursor-pointer focus:outline-none"
+                          title="Click to view entire team details"
+                        >
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold text-xs bg-gold/15 text-gold border border-gold/30 group-hover:bg-gold/30 group-hover:border-gold transition">
+                            👥 {r.teamName}
+                          </span>
+                          {r.members && (
+                            <span className="block opacity-60 text-[11px] mt-1 truncate max-w-[170px] text-cream">
+                              {r.members}
+                            </span>
+                          )}
+                        </button>
+                      ) : (
+                        <span className="text-cream opacity-30 text-xs">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 font-body text-cream opacity-70 text-xs whitespace-nowrap">{r.phone || "—"}</td>
                     <td className="px-4 py-3 font-body text-cream opacity-50 text-xs whitespace-nowrap">
