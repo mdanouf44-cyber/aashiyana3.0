@@ -1,4 +1,4 @@
-// ─── Aashiyana 3.0 – All editable content lives here ───────────────────────
+// ─── Aashiyana – All editable content lives here ───────────────────────────
 
 // ── JSONBin.io config ────────────────────────────────────────────────────────
 // 1. Go to https://jsonbin.io → sign up (free)
@@ -17,7 +17,7 @@ export const admin = {
 
 export const event = {
   name: "Aashiyana",
-  version: "3.0",
+  version: "",
   label: "Annual Celebration",
   year: 2026,
   date: "17 October 2026",
@@ -31,7 +31,7 @@ export const event = {
   about:
     "Aashiyana is our annual night for everyone who has something to perform, share, or simply cheer for.",
   aboutParagraph:
-    "Whether you are stepping on stage for the first time or returning to the spotlight, Aashiyana 3.0 is the place to be. Expect an evening packed with music, dance, drama, comedy and everything in between — all under one roof, one night.",
+    "Whether you are stepping on stage for the first time or returning to the spotlight, Aashiyana is the place to be. Expect an evening packed with music, dance, drama, comedy and everything in between — all under one roof, one night.",
 };
 
 // Events that require a team — must match names in `lineup` exactly
@@ -47,9 +47,8 @@ export const lineup = [
   { id: 7, name: "Poetry / Shayari", team: false },
   { id: 8, name: "Stand-up Comedy", team: false },
   { id: 9, name: "Musical Chairs", team: false },
-  { id: 10, name: "Guitar Playing", team: false },
-  { id: 11, name: "Unique Skill / Performance", team: false },
-  { id: 12, name: "Mime", team: false },
+  { id: 10, name: "Unique Skill / Performance", team: false },
+  { id: 11, name: "Mime", team: false },
 ];
 
 export const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Other"];

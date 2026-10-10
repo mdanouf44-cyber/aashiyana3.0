@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { event } from "../data/event";
+import { event, lineup } from "../data/event";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,7 +9,7 @@ const facts = [
   { label: "Date", value: event.date },
   { label: "Time", value: event.timing },
   { label: "Venue", value: event.venue },
-  { label: "Events", value: "12 categories, open to all years" },
+  { label: "Events", value: `${lineup.length} categories, open to all years` },
 ];
 
 export default function About() {

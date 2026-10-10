@@ -106,21 +106,23 @@ export default function Hero() {
         @keyframes pulse-line { 0%,100% { opacity: 0.2; } 50% { opacity: 0.7; } }
       `}</style>
 
-      {/* Large decorative '3.0' — desktop only */}
-      <div
-        className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block pointer-events-none select-none"
-        style={{
-          fontSize: "28vw",
-          fontFamily: "'Playfair Display', serif",
-          fontWeight: 900,
-          color: "transparent",
-          WebkitTextStroke: "1px rgba(255,215,0,0.06)",
-          lineHeight: 1,
-          userSelect: "none",
-        }}
-      >
-        3.0
-      </div>
+      {/* Large decorative version — desktop only (if version present) */}
+      {event.version && (
+        <div
+          className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block pointer-events-none select-none"
+          style={{
+            fontSize: "28vw",
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 900,
+            color: "transparent",
+            WebkitTextStroke: "1px rgba(255,215,0,0.06)",
+            lineHeight: 1,
+            userSelect: "none",
+          }}
+        >
+          {event.version}
+        </div>
+      )}
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16">
@@ -144,9 +146,15 @@ export default function Hero() {
               className="font-display font-black leading-none"
               style={{ fontSize: "clamp(3rem, 9vw, 8rem)", letterSpacing: "-0.02em" }}
             >
-              <span className="text-gold">{event.version}</span>
-              <span className="text-cream opacity-50 mx-3">·</span>
-              <span className="text-cream">{event.year}</span>
+              {event.version ? (
+                <>
+                  <span className="text-gold">{event.version}</span>
+                  <span className="text-cream opacity-50 mx-3">·</span>
+                  <span className="text-cream">{event.year}</span>
+                </>
+              ) : (
+                <span className="text-gold">{event.year}</span>
+              )}
             </h2>
           </div>
         </div>

@@ -1,6 +1,6 @@
 /**
  * src/lib/submit.js
- * JSONBin.io backend for Aashiyana 3.0 registrations.
+ * JSONBin.io backend for Aashiyana registrations.
  *
  * Free plan limits (more than enough for 150–200 participants):
  *   - 10,000 API requests / month

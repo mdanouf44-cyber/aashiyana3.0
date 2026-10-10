@@ -1,6 +1,6 @@
-# Aashiyana 3.0 — Registration Website
+# Aashiyana — Registration Website
 
-A sleek, poster-inspired registration site for **Aashiyana 3.0**, the Annual Celebration 2026.  
+A sleek, poster-inspired registration site for **Aashiyana**, the Annual Celebration 2026.  
 Built with **React + Vite**, styled with **TailwindCSS v3**, animated with **GSAP + ScrollTrigger + Lenis**.
 
 ---
@@ -110,4 +110,4 @@ Make sure to set `VITE_SHEET_ENDPOINT` in your host's environment variables dash
 
 ---
 
-*© 2026 Aashiyana 3.0*
+*© 2026 Aashiyana*

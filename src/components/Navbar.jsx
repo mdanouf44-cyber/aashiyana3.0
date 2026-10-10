@@ -99,8 +99,13 @@ export default function Navbar() {
           onClick={() => scrollTo("hero")}
           style={{ background: "none", border: "none", cursor: "pointer" }}
         >
-          Aashiyana{" "}
-          <span className="text-gold">3.0</span>
+          {event.name}
+          {event.version ? (
+            <>
+              {" "}
+              <span className="text-gold">{event.version}</span>
+            </>
+          ) : null}
           <span
             className="absolute bottom-0 left-0 h-px w-0 bg-gold group-hover:w-full transition-all duration-300"
             style={{ bottom: "-2px" }}

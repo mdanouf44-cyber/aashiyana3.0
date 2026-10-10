@@ -9,7 +9,7 @@ function scrollTo(id) {
 }
 
 const MARQUEE_TEXT = Array.from({ length: 8 })
-  .map(() => `AASHIYANA 3.0 · 17 OCTOBER 2026 ·`)
+  .map(() => `${event.name.toUpperCase()} · ${event.date.toUpperCase()} ·`)
   .join("  ");
 
 export default function Footer() {
@@ -36,7 +36,7 @@ export default function Footer() {
           {/* Logo + tagline */}
           <div>
             <p className="font-display font-bold text-cream text-lg">
-              {event.name} <span className="text-gold">{event.version}</span>
+              {event.name}{event.version ? <> <span className="text-gold">{event.version}</span></> : ""}
             </p>
             <p className="font-body text-cream opacity-40 text-sm mt-1 italic font-display">
               {event.tagline}
@@ -74,7 +74,7 @@ export default function Footer() {
 
         {/* Bottom line */}
         <p className="font-body text-center" style={{ color: "rgba(253,246,236,0.35)", fontSize: "0.78rem", letterSpacing: "0.05em" }}>
-          © 2026 {event.name} {event.version} · {event.institution} · Organised by {event.committee}
+          © 2026 {event.name}{event.version ? ` ${event.version}` : ""} · {event.institution} · Organised by {event.committee}
         </p>
       </div>
     </footer>

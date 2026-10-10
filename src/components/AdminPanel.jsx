@@ -43,7 +43,7 @@ function LoginForm({ onLogin }) {
       <div className="w-full max-w-sm">
         <p className="label-tag mb-3">Admin Access</p>
         <h1 className="font-display font-black text-cream text-3xl mb-8">
-          {event.name} <span className="text-gold">{event.version}</span>
+          {event.name}{event.version ? <> <span className="text-gold">{event.version}</span></> : ""}
         </h1>
         <form onSubmit={submit} className="flex flex-col gap-6">
           <div>
@@ -261,7 +261,7 @@ export default function AdminPanel() {
           <Link to="/" className="label-tag text-gold-muted hover:text-gold transition">← Back to site</Link>
           <span className="opacity-30 text-cream">|</span>
           <p className="font-display font-bold text-cream text-lg">
-            {event.name} <span className="text-gold">{event.version}</span>
+            {event.name}{event.version ? <> <span className="text-gold">{event.version}</span></> : ""}
             <span className="label-tag ml-2 text-gold-muted font-body font-normal">Admin</span>
           </p>
         </div>
@@ -480,7 +480,7 @@ export default function AdminPanel() {
         </div>
 
         <p className="mt-4 font-body text-cream opacity-25 text-xs text-right">
-          Aashiyana {event.version} Admin · {event.date}
+          {event.name}{event.version ? ` ${event.version}` : ""} Admin · {event.date}
         </p>
       </div>
     </div>

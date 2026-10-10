@@ -34,14 +34,14 @@ function Field({ label, error, children }) {
 function QRTicket({ data, regId, onReset, ticketRef }) {
   // Full JSON payload: scanner can resolve by id OR usn from a single QR scan.
   const qrValue = JSON.stringify({ id: regId, usn: data.usn, name: data.fullName, events: data.participation });
-  const waText = `I just registered for Aashiyana 3.0! 🎭\nName: ${data.fullName}\nUSN: ${data.usn}\nEvents: ${data.participation.join(", ")}\n\nJoin us on ${event.date} at ${event.venue}.\nRegister: ${window.location.href}`;
+  const waText = `I just registered for ${event.name}! 🎭\nName: ${data.fullName}\nUSN: ${data.usn}\nEvents: ${data.participation.join(", ")}\n\nJoin us on ${event.date} at ${event.venue}.\nRegister: ${window.location.href}`;
   const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
 
   const saveImage = async () => {
     if (!ticketRef.current) return;
     const canvas = await html2canvas(ticketRef.current, { useCORS: true, scale: 2, backgroundColor: "#2a0a3d" });
     const link = document.createElement("a");
-    link.download = `Aashiyana3_${data.usn}.png`;
+    link.download = `${event.name}_${data.usn}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
@@ -188,7 +188,7 @@ function QRTicket({ data, regId, onReset, ticketRef }) {
             REG ID: {regId}
           </p>
           <p className="label-tag" style={{ fontSize: "0.6rem", color: "#b8962e" }}>
-            {event.name} {event.version}
+            {event.name}{event.version ? ` ${event.version}` : ""}
           </p>
         </div>
       </div>
@@ -396,7 +396,7 @@ export default function Register() {
             {closed ? (
               <div className="rounded-2xl p-8 text-center" style={{ border: "1px solid #b8962e", background: "rgba(255,255,255,0.04)" }}>
                 <p className="font-display text-2xl text-cream mb-2">Registrations are closed.</p>
-                <p className="font-body text-cream opacity-50 text-sm">Thank you for your interest in Aashiyana 3.0.</p>
+                <p className="font-body text-cream opacity-50 text-sm">Thank you for your interest in {event.name}.</p>
               </div>
             ) : status === "success" && successData ? (
               <QRTicket data={successData} regId={regId} onReset={handleReset} ticketRef={ticketRef} />
